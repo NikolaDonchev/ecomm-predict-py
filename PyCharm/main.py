@@ -51,6 +51,37 @@ def minmax_normalisation(data):
     matrix_normalised = pd.melt(matrix_normalised, id_vars=['customer_id'], value_name='minmax_quantity').dropna()
     return matrix_normalised
 
+def transform_bins(s):
+    '''
+    1 = 0
+    2 = 1
+    2-3 = 3
+    4-8 = 4
+    < 9 = 5
+    '''
+    if s == 1:
+        s = 0
+    elif s == 2:
+        s = 1
+    elif s > 2 and s <= 3:
+        s = 3
+    elif s > 3 and s <= 8:
+        s = 4
+    elif s > 8:
+        s = 5
+    return s
+
+# frame.apply(f, axis=0)
+
+def binning_normalisation(data):
+    '''
+    Group Data into Bins
+    :param data:
+    :return normalised:
+    '''
+    data['quantity'] = data['quantity'].transform(transform_bins)
+    return data
+
 def ml_split(items):
     '''
     Split the data for ML model 80:20 ratio
@@ -72,7 +103,7 @@ def generate_recommendations(data, customers, alg, target=None):
     elif alg == "similarity":
         model = tc.item_similarity_recommender.create(train, user_id="customer_id", item_id="product_id", target=target, similarity_type='cosine')
 
-    recommendations = model.recommend(users=customers, k=10)
+    recommendations = model.recommend(users=customers, k=10, verbose=False)
     return recommendations
 
 lineItemsMinMax = minmax_normalisation(lineItems)
