@@ -3,7 +3,7 @@ import turicreate as tc
 import mysql.connector as db
 from sklearn.model_selection import train_test_split
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # Connecting to the MySQL database
 mydb = db.connect(
